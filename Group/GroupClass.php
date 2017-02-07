@@ -36,6 +36,15 @@ class GroupClass {
     );
 
     /**
+     * Returns the list of valid classes
+     *
+     * @return array
+     */
+    function getValidClasses() {
+        return $this->validClasses;
+    }
+
+    /**
      * Check to see if the given class is valid
      *
      * @param $class

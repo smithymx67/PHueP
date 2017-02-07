@@ -124,15 +124,19 @@ class Client {
      * @return Light
      */
     function getLight($lightID) {
-        $light = $this->conn->sendGetCmd("lights/{$lightID}");
-        if(isset($light[0]["error"])){
-            $error = $this->generateError($light);
-            print_r($error);
-            return null;
+        if(is_string($lightID)) {
+            $light = $this->conn->sendGetCmd("lights/{$lightID}");
+            if(isset($light[0]["error"])){
+                $error = $this->generateError($light);
+                print_r($error);
+                return null;
+            } else {
+                $lightState = $this->createNewLightState($lightID, $light);
+                $newLight = $this->createNewLight($lightID, $light, $lightState);
+                return $newLight;
+            }
         } else {
-            $lightState = $this->createNewLightState($lightID, $light);
-            $newLight = $this->createNewLight($lightID, $light, $lightState);
-            return $newLight;
+            return null;
         }
     }
 
@@ -143,23 +147,27 @@ class Client {
      * @return Scene
      */
     function getScene($sceneID) {
-        $scene = $this->conn->sendGetCmd("scenes/{$sceneID}");
+        if(is_string($sceneID)) {
+            $scene = $this->conn->sendGetCmd("scenes/{$sceneID}");
 
-        if(isset($scene[0]["error"])) {
-            $error = $this->generateError($scene);
-            print_r($error);
-            return null;
-        } else {
-            $sceneLightStates = array();
-            foreach ($scene["lightstates"] as $lightID => $light) {
-                $sceneState = $this->createNewSceneLightState($sceneID, $lightID, $light);
-                array_push($sceneLightStates, $sceneState);
+            if(isset($scene[0]["error"])) {
+                $error = $this->generateError($scene);
+                print_r($error);
+                return null;
+            } else {
+                $sceneLightStates = array();
+                foreach ($scene["lightstates"] as $lightID => $light) {
+                    $sceneState = $this->createNewSceneLightState($sceneID, $lightID, $light);
+                    array_push($sceneLightStates, $sceneState);
+                }
+
+                $sceneAppData = $this->createNewAppData($scene);
+
+                $newScene = $this->createNewScene($sceneID, $scene, $sceneLightStates, $sceneAppData);
+                return $newScene;
             }
-
-            $sceneAppData = $this->createNewAppData($scene);
-
-            $newScene = $this->createNewScene($sceneID, $scene, $sceneLightStates, $sceneAppData);
-            return $newScene;
+        } else {
+            return null;
         }
     }
 
@@ -170,17 +178,21 @@ class Client {
      * @return Group
      */
     function getGroup($groupID) {
-        $group = $this->conn->sendGetCmd("groups/{$groupID}");
+        if(is_string($groupID)) {
+            $group = $this->conn->sendGetCmd("groups/{$groupID}");
 
-        if(isset($group[0]["error"])) {
-            $error = $this->generateError($group);
-            print_r($error);
-            return null;
+            if(isset($group[0]["error"])) {
+                $error = $this->generateError($group);
+                print_r($error);
+                return null;
+            } else {
+                $groupState = $this->createNewGroupState($group);
+                $groupAction = $this->createNewGroupAction($groupID, $group);
+                $newGroup = $this->createNewGroup($groupID, $group, $groupState, $groupAction);
+                return $newGroup;
+            }
         } else {
-            $groupState = $this->createNewGroupState($group);
-            $groupAction = $this->createNewGroupAction($groupID, $group);
-            $newGroup = $this->createNewGroup($groupID, $group, $groupState, $groupAction);
-            return $newGroup;
+            return null;
         }
     }
 
@@ -191,16 +203,20 @@ class Client {
      * @return Schedule
      */
     function getSchedule($scheduleID) {
-        $schedule = $this->conn->sendGetCmd("schedules/{$scheduleID}");
+        if(is_string($scheduleID)) {
+            $schedule = $this->conn->sendGetCmd("schedules/{$scheduleID}");
 
-        if(isset($schedule[0]["error"])) {
-            $error = $this->generateError($schedule);
-            print_r($error);
-            return null;
+            if(isset($schedule[0]["error"])) {
+                $error = $this->generateError($schedule);
+                print_r($error);
+                return null;
+            } else {
+                $scheduleCommand = $this->createNewScheduleCommand($scheduleID, $schedule);
+                $newSchedule = $this->createNewSchedule($scheduleID, $schedule, $scheduleCommand);
+                return $newSchedule;
+            }
         } else {
-            $scheduleCommand = $this->createNewScheduleCommand($scheduleID, $schedule);
-            $newSchedule = $this->createNewSchedule($scheduleID, $schedule, $scheduleCommand);
-            return $newSchedule;
+            return null;
         }
     }
 
@@ -389,17 +405,31 @@ class Client {
     /**
      * Create a new scene based on the current state of the lights
      *
-     * @param $sceneName
+     * @param string $sceneName
      * @return array
      */
     function createScene($sceneName) {
-        // Check to see if the name exists
-        $conn = new ApiConnection();
-        $URL = "scenes";
-        $data = '{"name": "' . $sceneName .'","recycle":true, "lights":["1","2","3","4","5","6","7","8","9"]}';
-        $result = $conn->sendPostCmd($URL, $data);
+        if(is_string($sceneName) && strlen($sceneName) > 0 && strlen($sceneName) <= 32) {
+            $allscenes = $this->getAllScenes();
+            $sceneNameExists = false;
+            foreach($allscenes as $scene) {
+                if($scene["name"] == $sceneName){
+                    $sceneNameExists = true;
+                    break;
+                }
+            }
 
-        return $result;
+            if(!$sceneNameExists) {
+                $URL = "scenes";
+                $data = '{"name": "' . $sceneName .'","recycle":true, "lights":["1","2","3","4","5","6","7","8","9"]}';
+                $result = $this->conn->sendPostCmd($URL, $data);
+                return $result;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -410,16 +440,29 @@ class Client {
      * @return array
      */
     function createGroup($name, $lights) {
-        // See api docs for limits
-        // Check to see if name exist
-        $conn = new ApiConnection();
-        $groupURL = "groups";
-        $data = '{"name": "' . $name .'", 
+        if(is_string($name) && strlen($name) > 0 && strlen($name) <= 32) {
+            $allGroups = $this->getAllGroups();
+            $groupNameExists = false;
+            foreach($allGroups as $group) {
+                if($group["name"] == $name) {
+                    $groupNameExists = true;
+                    break;
+                }
+            }
+
+            if(!$groupNameExists) {
+                $groupURL = "groups";
+                $data = '{"name": "' . $name .'", 
                   "type": "LightGroup",
                   "lights": ' . json_encode($lights) .'}';
-        $result = $conn->sendPostCmd($groupURL, $data);
-
-        return $result;
+                $result = $this->conn->sendPostCmd($groupURL, $data);
+                return $result;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -431,17 +474,31 @@ class Client {
      * @return array
      */
     function createRoom($name, $lights, $class) {
-        // See api docs for limits
-        // Check to see if name exist
-        $conn = new ApiConnection();
-        $URL = "groups";
-        $data = '{"name": "' . $name .'", 
+        $groupClasses = new GroupClass();
+        if(is_string($name) && strlen($name) > 0 && strlen($name) <= 32 && $groupClasses->isClassValid($class)) {
+            $allGroups = $this->getAllGroups();
+            $groupNameExists = false;
+            foreach($allGroups as $group) {
+                if($group["name"] == $name) {
+                    $groupNameExists = true;
+                    break;
+                }
+            }
+
+            if(!$groupNameExists) {
+                $URL = "groups";
+                $data = '{"name": "' . $name .'", 
                   "type": "Room",
                   "class": "' . $class . '",
                   "lights": ' . json_encode($lights) .'}';
-        $result = $conn->sendPostCmd($URL, $data);
-
-        return $result;
+                $result = $this->conn->sendPostCmd($URL, $data);
+                return $result;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -456,18 +513,28 @@ class Client {
      * @return array
      */
     function createSchedule($name, $desc, $time, $cmdAddress, $cmdMethod, $cmdBody) {
-        $conn = new ApiConnection();
-        $URL = "schedules";
-        $data = '{"name": "' . $name .'", 
-                  "description": "' . $desc . '",
-                  "localtime": "' . $time . '",
-                  "command": {
-                    "address": "' . $cmdAddress . '",
-                    "method": "' . $cmdMethod . '",
-                    "body": ' . json_encode($cmdBody) . '}';
-        $result = $conn->sendPostCmd($URL, $data);
-
-        return $result;
+        if(is_string($name) && strlen($name) > 0 && strlen($name) <= 32) {
+            if(is_string($desc) && strlen($desc) > 0 && strlen(($desc) <= 64)) {
+                if(is_string($time) && is_string($cmdAddress) && is_string($cmdMethod) && is_string($cmdBody)) {
+                    $URL = "schedules";
+                    $data = '{"name": "' . $name .'", 
+                              "description": "' . $desc . '",
+                              "localtime": "' . $time . '",
+                              "command": {
+                                "address": "' . $cmdAddress . '",
+                                "method": "' . $cmdMethod . '",
+                                "body": ' . json_encode($cmdBody) . '}';
+                    $result = $this->conn->sendPostCmd($URL, $data);
+                    return $result;
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 }
 ?>

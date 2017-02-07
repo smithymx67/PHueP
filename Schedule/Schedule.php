@@ -5,7 +5,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.0
+ * @version     v1.1
  */
 class Schedule {
     /**
@@ -186,13 +186,15 @@ class Schedule {
      * @return array
      */
     function setScheduleName($name) {
-        // String 0 to 32
-        $conn = new ApiConnection();
-        $URL = "schedules/" . $this->scheduleID;
-        $data = '{"name": "' . $name .'"}';
-        $result = $conn->sendPutCmd($URL, $data);
-
-        return $result;
+        if(is_string($name) && $name > 0 && $name <= 32) {
+            $conn = new ApiConnection();
+            $URL = "schedules/" . $this->scheduleID;
+            $data = '{"name": "' . $name .'"}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -202,13 +204,15 @@ class Schedule {
      * @return array
      */
     function setScheduleDescription($description) {
-        // String 0 to 64
-        $conn = new ApiConnection();
-        $URL = "schedules/" . $this->scheduleID;
-        $data = '{"description": "' . $description .'"}';
-        $result = $conn->sendPutCmd($URL, $data);
-
-        return $result;
+        if(is_string($description) && $description > 0 && $description <= 32) {
+            $conn = new ApiConnection();
+            $URL = "schedules/" . $this->scheduleID;
+            $data = '{"description": "' . $description .'"}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -234,12 +238,15 @@ class Schedule {
      */
     function setScheduleStatus($status) {
         // String 5 to 16
-        $conn = new ApiConnection();
-        $URL = "schedules/" . $this->scheduleID;
-        $data = '{"status": "' . $status .'"}';
-        $result = $conn->sendPutCmd($URL, $data);
-
-        return $result;
+        if(is_string($status) && $status >= 5 && $status <= 16) {
+            $conn = new ApiConnection();
+            $URL = "schedules/" . $this->scheduleID;
+            $data = '{"status": "' . $status .'"}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -249,12 +256,15 @@ class Schedule {
      * @return array
      */
     function setScheduleAutoDelete($auto) {
-        $conn = new ApiConnection();
-        $URL = "schedules/" . $this->scheduleID;
-        $data = '{"autodelete": "' . $auto .'"}';
-        $result = $conn->sendPutCmd($URL, $data);
-
-        return $result;
+        if(is_bool($auto)){
+            $conn = new ApiConnection();
+            $URL = "schedules/" . $this->scheduleID;
+            $data = '{"autodelete": "' . $auto .'"}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -266,7 +276,6 @@ class Schedule {
         $conn = new ApiConnection();
         $URL = "schedules/" . $this->scheduleID;
         $result = $conn->sendDeleteCmd($URL);
-
         return $result;
     }
 }
