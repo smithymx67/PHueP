@@ -5,7 +5,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.0
+ * @version     v1.1
  */
 class SceneLightState {
     /**
@@ -112,13 +112,15 @@ class SceneLightState {
      * @return array
      */
     function setLightBrightness($bri) {
-        // 1 to 254
-        $conn = new ApiConnection();
-        $URL = "scenes/{$this->sceneID}/lightstates/{$this->lightID}";
-        $data = '{"bri": ' . $bri .'}';
-        $result = $conn->sendPutCmd($URL, $data);
-
-        return $result;
+        if(is_int($bri) && $bri >= 1 && $bri <= 254) {
+            $conn = new ApiConnection();
+            $URL = "scenes/{$this->sceneID}/lightstates/{$this->lightID}";
+            $data = '{"bri": ' . $bri .'}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -128,13 +130,15 @@ class SceneLightState {
      * @return array
      */
     function setLightX($x) {
-        // Between 0 and 1
-        $conn = new ApiConnection();
-        $URL = "scenes/{$this->sceneID}/lightstates/{$this->lightID}";
-        $data = '{"xy": [' . $x .',' . $this->getLightXY()[1] . ']}';
-        $result = $conn->sendPutCmd($URL, $data);
-
-        return $result;
+        if(is_double($x) && $x >= 0 && $x <= 1) {
+            $conn = new ApiConnection();
+            $URL = "scenes/{$this->sceneID}/lightstates/{$this->lightID}";
+            $data = '{"xy": [' . $x .',' . $this->getLightXY()[1] . ']}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -144,13 +148,15 @@ class SceneLightState {
      * @return array
      */
     function setLightY($y) {
-        // Between 0 and 1
-        $conn = new ApiConnection();
-        $URL = "scenes/{$this->sceneID}/lightstates/{$this->lightID}";
-        $data = '{"xy": [' . $this->getLightXY()[0] .',' . $y . ']}';
-        $result = $conn->sendPutCmd($URL, $data);
-
-        return $result;
+        if(is_double($y) && $y >= 0 && $y <= 1) {
+            $conn = new ApiConnection();
+            $URL = "scenes/{$this->sceneID}/lightstates/{$this->lightID}";
+            $data = '{"xy": [' . $this->getLightXY()[0] .',' . $y . ']}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -160,13 +166,15 @@ class SceneLightState {
      * @return array
      */
     function setLightCT($ct) {
-        // Between 153 an 500
-        $conn = new ApiConnection();
-        $URL = "scenes/{$this->sceneID}/lightstates/{$this->lightID}";
-        $data = '{"ct": ' . $ct .'}';
-        $result = $conn->sendPutCmd($URL, $data);
-
-        return $result;
+        if(is_int($ct) && $ct >= 153 && $ct <= 500) {
+            $conn = new ApiConnection();
+            $URL = "scenes/{$this->sceneID}/lightstates/{$this->lightID}";
+            $data = '{"ct": ' . $ct .'}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -176,14 +184,16 @@ class SceneLightState {
      * @return array
      */
     function setOn($state) {
-        // true or false
-        $conn = new ApiConnection();
-        $URL = "scenes/{$this->sceneID}/lightstates/{$this->lightID}";
-        $state = $state ? 'true' : 'false';
-        $data = '{"on": ' . $state .'}';
-        $result = $conn->sendPutCmd($URL, $data);
-
-        return $result;
+        if(is_bool($state)) {
+            $conn = new ApiConnection();
+            $URL = "scenes/{$this->sceneID}/lightstates/{$this->lightID}";
+            $state = $state ? 'true' : 'false';
+            $data = '{"on": ' . $state .'}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**

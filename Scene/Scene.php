@@ -5,7 +5,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.0
+ * @version     v1.1
  */
 class Scene {
     /**
@@ -181,15 +181,18 @@ class Scene {
      * Sets the name of the scene
      *
      * @param string $newName
+     * @return array
      */
     function setSceneName($newName) {
-        // String 1 to 32
-        $conn = new ApiConnection();
-        $URL = "scenes/" . $this->sceneID;
-        $data = '{"name": "' . $newName .'"}';
-        $result = $conn->sendPutCmd($URL, $data);
-
-        print_r($result);
+        if(is_string($newName) && strlen($newName) > 0 && strlen($newName) <= 32) {
+            $conn = new ApiConnection();
+            $URL = "scenes/" . $this->sceneID;
+            $data = '{"name": "' . $newName .'"}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -219,7 +222,6 @@ class Scene {
         $conn = new ApiConnection();
         $URL = "scenes/{$this->sceneID}";
         $result = $conn->sendDeleteCmd($URL);
-
         return $result;
     }
 
@@ -233,7 +235,6 @@ class Scene {
         $URL = "scenes/{$this->sceneID}";
         $data = '{"storelightstate":true}';
         $result = $conn->sendPutCmd($URL, $data);
-
         return $result;
     }
 }

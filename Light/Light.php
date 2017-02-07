@@ -5,7 +5,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.0
+ * @version     v1.1
  */
 class Light {
     /**
@@ -162,16 +162,19 @@ class Light {
     /**
      * Set the name of the light
      *
-     * @param $newName
+     * @param string $newName
      * @return array
      */
     function setLightName($newName) {
-        $conn = new ApiConnection();
-        $lightURL = "lights/" . $this->lightID;
-        $data = '{"name": "' . $newName .'"}';
-        $result = $conn->sendPutCmd($lightURL, $data);
-
-        return $result;
+        if(is_string($newName) && strlen($newName) > 0 && strlen($newName) <= 32) {
+            $conn = new ApiConnection();
+            $URL = "lights/" . $this->lightID;
+            $data = '{"name": "' . $newName .'"}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 }
 ?>

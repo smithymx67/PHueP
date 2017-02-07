@@ -5,7 +5,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.0
+ * @version     v1.1
  */
 class GroupAction {
     /**
@@ -186,30 +186,34 @@ class GroupAction {
      * @return array
      */
     function setGroupOn($state) {
-        // true or false
-        $conn = new ApiConnection();
-        $url = "groups/" . $this->groupID . "/action";
-        $state = $state ? 'true' : 'false';
-        $data = '{"on": ' . $state .'}';
-        $result = $conn->sendPutCmd($url, $data);
-
-        return $result;
+        if(is_bool($state)){
+            $conn = new ApiConnection();
+            $url = "groups/" . $this->groupID . "/action";
+            $state = $state ? 'true' : 'false';
+            $data = '{"on": ' . $state .'}';
+            $result = $conn->sendPutCmd($url, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
      * Set the groups brightness state
      *
-     * @param integer $bri
+     * @param int $bri
      * @return array
      */
     function setGroupBrightness($bri) {
-        // 0 to 254
-        $conn = new ApiConnection();
-        $url = "groups/" . $this->groupID . "/action";
-        $data = '{"bri": ' . $bri .'}';
-        $result = $conn->sendPutCmd($url, $data);
-
-        return $result;
+        if(is_int($bri) && $bri >= 0 && $bri <= 254) {
+            $conn = new ApiConnection();
+            $url = "groups/" . $this->groupID . "/action";
+            $data = '{"bri": ' . $bri .'}';
+            $result = $conn->sendPutCmd($url, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -219,13 +223,15 @@ class GroupAction {
      * @return array
      */
     function setGroupHue($hue) {
-        // 0 to 65535
-        $conn = new ApiConnection();
-        $url = "groups/" . $this->groupID . "/action";
-        $data = '{"hue": ' . $hue .'}';
-        $result = $conn->sendPutCmd($url, $data);
-
-        return $result;
+        if(is_int($hue) && $hue >= 0 && $hue <= 65535) {
+            $conn = new ApiConnection();
+            $url = "groups/" . $this->groupID . "/action";
+            $data = '{"hue": ' . $hue .'}';
+            $result = $conn->sendPutCmd($url, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -235,13 +241,15 @@ class GroupAction {
      * @return array
      */
     function setGroupSaturation($sat) {
-        // 0 to 254
-        $conn = new ApiConnection();
-        $url = "groups/" . $this->groupID . "/action";
-        $data = '{"sat": ' . $sat .'}';
-        $result = $conn->sendPutCmd($url, $data);
-
-        return $result;
+        if(is_int($sat) && $sat >= 0 && $sat <= 254) {
+            $conn = new ApiConnection();
+            $url = "groups/" . $this->groupID . "/action";
+            $data = '{"sat": ' . $sat .'}';
+            $result = $conn->sendPutCmd($url, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -251,13 +259,15 @@ class GroupAction {
      * @return array
      */
     function setGroupEffect($effect) {
-        // none or colorloop
-        $conn = new ApiConnection();
-        $url = "groups/" . $this->groupID . "/action";
-        $data = '{"effect": "' . $effect .'"}';
-        $result = $conn->sendPutCmd($url, $data);
-
-        return $result;
+        if(is_string($effect) && ($effect == "none" || $effect == "colorloop")) {
+            $conn = new ApiConnection();
+            $url = "groups/" . $this->groupID . "/action";
+            $data = '{"effect": "' . $effect .'"}';
+            $result = $conn->sendPutCmd($url, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -267,13 +277,15 @@ class GroupAction {
      * @return array
      */
     function setGroupX($x) {
-        // Between 0 and 1
-        $conn = new ApiConnection();
-        $url = "groups/" . $this->groupID . "/action";
-        $data = '{"xy": [' . $x .',' . $this->getGroupXY()[1] . ']}';
-        $result = $conn->sendPutCmd($url, $data);
-
-        return $result;
+        if(is_double($x) && $x >= 0 && $x <= 1){
+            $conn = new ApiConnection();
+            $url = "groups/" . $this->groupID . "/action";
+            $data = '{"xy": [' . $x .',' . $this->getGroupXY()[1] . ']}';
+            $result = $conn->sendPutCmd($url, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -283,13 +295,15 @@ class GroupAction {
      * @return array
      */
     function setGroupY($y) {
-        // Between 0 and 1
-        $conn = new ApiConnection();
-        $url = "groups/" . $this->groupID . "/action";
-        $data = '{"xy": [' . $this->getGroupXY()[0] .',' . $y . ']}';
-        $result = $conn->sendPutCmd($url, $data);
-
-        return $result;
+        if(is_double($y) && $y >= 0 && $y <= 1){
+            $conn = new ApiConnection();
+            $url = "groups/" . $this->groupID . "/action";
+            $data = '{"xy": [' . $this->getGroupXY()[0] .',' . $y . ']}';
+            $result = $conn->sendPutCmd($url, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -299,13 +313,15 @@ class GroupAction {
      * @return array
      */
     function setGroupCT($ct) {
-        // Between 153 an 500
-        $conn = new ApiConnection();
-        $url = "groups/" . $this->groupID . "/action";
-        $data = '{"ct": ' . $ct .'}';
-        $result = $conn->sendPutCmd($url, $data);
-
-        return $result;
+        if(is_int($ct) && $ct >= 153 && $ct <= 500) {
+            $conn = new ApiConnection();
+            $url = "groups/" . $this->groupID . "/action";
+            $data = '{"ct": ' . $ct .'}';
+            $result = $conn->sendPutCmd($url, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -315,13 +331,15 @@ class GroupAction {
      * @return array
      */
     function setGroupAlert($alert) {
-        // none, select, lselect
-        $conn = new ApiConnection();
-        $url = "groups/" . $this->groupID . "/action";
-        $data = '{"alert": "' . $alert .'"}';
-        $result = $conn->sendPutCmd($url, $data);
-
-        return $result;
+        if(is_string($alert) && ($alert == "none" || $alert == "select" || $alert == "lselect")) {
+            $conn = new ApiConnection();
+            $url = "groups/" . $this->groupID . "/action";
+            $data = '{"alert": "' . $alert .'"}';
+            $result = $conn->sendPutCmd($url, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**

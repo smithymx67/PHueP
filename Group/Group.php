@@ -1,11 +1,12 @@
 <?php
+require_once "GroupClass.php";
 
 /**
  * Class Group
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.0
+ * @version     v1.1
  */
 class Group {
     /**
@@ -60,13 +61,13 @@ class Group {
     /**
      * Group constructor.
      *
-     * @param $groupID
-     * @param $groupName
-     * @param $groupType
-     * @param $groupClass
-     * @param $groupState
-     * @param $groupAction
-     * @param $groupLights
+     * @param string        $groupID
+     * @param string        $groupName
+     * @param string        $groupType
+     * @param string        $groupClass
+     * @param GroupState    $groupState
+     * @param GroupAction   $groupAction
+     * @param array         $groupLights
      */
     function __construct($groupID, $groupName, $groupType, $groupClass, $groupState, $groupAction, $groupLights) {
         $this->groupID          = (string) $groupID;
@@ -144,33 +145,37 @@ class Group {
     /**
      * Method to set the name of a group
      *
-     * @param string $name  The name of the group
+     * @param string $name  The name of the group - 1 to 32
      * @return array
      */
     function setGroupName($name) {
-        // 0 and 32 string
-        $conn = new ApiConnection();
-        $groupURL = "groups/" . $this->groupID;
-        $data = '{"name": "' . $name .'"}';
-        $result = $conn->sendPutCmd($groupURL, $data);
-
-        return $result;
+        if(is_string($name) && strlen($name) > 0 && strlen($name) <= 32){
+            $conn = new ApiConnection();
+            $groupURL = "groups/" . $this->groupID;
+            $data = '{"name": "' . $name .'"}';
+            $result = $conn->sendPutCmd($groupURL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
      * Method to set the lights inside a group
      *
-     * @param array $lights     List of all lights by ID in the group
+     * @param array $lights     Array of all lights by ID in the group
      * @return array
      */
     function setGroupLights($lights) {
-        // Light ids in string format
-        $conn = new ApiConnection();
-        $groupURL = "groups/" . $this->groupID;
-        $data = '{"lights": ' . json_encode($lights) .'}';
-        $result = $conn->sendPutCmd($groupURL, $data);
-
-        return $result;
+        if(is_array($lights)) {
+            $conn = new ApiConnection();
+            $groupURL = "groups/" . $this->groupID;
+            $data = '{"lights": ' . json_encode($lights) .'}';
+            $result = $conn->sendPutCmd($groupURL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -180,13 +185,16 @@ class Group {
      * @return array
      */
     function setGroupClass($class) {
-        // one of the pre defined names
-        $conn = new ApiConnection();
-        $groupURL = "groups/" . $this->groupID;
-        $data = '{"class": "' . $class .'"}';
-        $result = $conn->sendPutCmd($groupURL, $data);
-
-        return $result;
+        $groupClass = new GroupClass();
+        if($groupClass->isClassValid($class)) {
+            $conn = new ApiConnection();
+            $groupURL = "groups/" . $this->groupID;
+            $data = '{"class": "' . $class .'"}';
+            $result = $conn->sendPutCmd($groupURL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -199,7 +207,6 @@ class Group {
         $conn = new ApiConnection();
         $groupURL = "groups/{$id}";
         $result = $conn->sendDeleteCmd($groupURL);
-
         return $result;
     }
 
@@ -214,7 +221,6 @@ class Group {
         $URL = "groups/{$this->groupID}/action";
         $data = '{"scene": "' . $sceneID .'"}';
         $result = $conn->sendPutCmd($URL, $data);
-
         return $result;
     }
 }

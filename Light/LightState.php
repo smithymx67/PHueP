@@ -5,7 +5,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.0
+ * @version     v1.1
  */
 class LightState {
     /**
@@ -193,14 +193,16 @@ class LightState {
      * @return array
      */
     function setOnState($state) {
-        // true or false
-        $conn = new ApiConnection();
-        $lightURL = "lights/" . $this->lightID . "/state";
-        $state = $state ? 'true' : 'false';
-        $data = '{"on": ' . $state .'}';
-        $result = $conn->sendPutCmd($lightURL, $data);
-
-        return $result;
+        if(is_bool($state)) {
+            $conn = new ApiConnection();
+            $URL = "lights/" . $this->lightID . "/state";
+            $state = $state ? 'true' : 'false';
+            $data = '{"on": ' . $state .'}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -210,13 +212,15 @@ class LightState {
      * @return array
      */
     function setBrightness($bri) {
-        // 1 to 254
-        $conn = new ApiConnection();
-        $lightURL = "lights/" . $this->lightID . "/state";
-        $data = '{"bri": ' . $bri .'}';
-        $result = $conn->sendPutCmd($lightURL, $data);
-
-        return $result;
+        if(is_int($bri) && $bri >= 1 && $bri <= 254) {
+            $conn = new ApiConnection();
+            $URL = "lights/" . $this->lightID . "/state";
+            $data = '{"bri": ' . $bri .'}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -226,13 +230,15 @@ class LightState {
      * @return array
      */
     function setHue($hue) {
-        // 0 to 65535
-        $conn = new ApiConnection();
-        $lightURL = "lights/" . $this->lightID . "/state";
-        $data = '{"hue": ' . $hue .'}';
-        $result = $conn->sendPutCmd($lightURL, $data);
-
-        return $result;
+        if(is_int($hue) && $hue >= 0 && $hue <= 65535) {
+            $conn = new ApiConnection();
+            $URL = "lights/" . $this->lightID . "/state";
+            $data = '{"hue": ' . $hue .'}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -242,13 +248,15 @@ class LightState {
      * @return array
      */
     function setSaturation($sat) {
-        // 0 to 254
-        $conn = new ApiConnection();
-        $lightURL = "lights/" . $this->lightID . "/state";
-        $data = '{"sat": ' . $sat .'}';
-        $result = $conn->sendPutCmd($lightURL, $data);
-
-        return $result;
+        if(is_int($sat) && $sat >= 0 && $sat <= 254) {
+            $conn = new ApiConnection();
+            $URL = "lights/" . $this->lightID . "/state";
+            $data = '{"sat": ' . $sat .'}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -258,13 +266,15 @@ class LightState {
      * @return array
      */
     function setX($x) {
-        // Between 0 and 1
-        $conn = new ApiConnection();
-        $lightURL = "lights/" . $this->lightID . "/state";
-        $data = '{"xy": [' . $x .',' . $this->getXY()[1] . ']}';
-        $result = $conn->sendPutCmd($lightURL, $data);
-
-        return $result;
+        if(is_double($x) && $x >= 0 && $x <= 1) {
+            $conn = new ApiConnection();
+            $URL = "lights/" . $this->lightID . "/state";
+            $data = '{"xy": [' . $x .',' . $this->getXY()[1] . ']}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -274,13 +284,15 @@ class LightState {
      * @return array
      */
     function setY($y) {
-        // Between 0 and 1
-        $conn = new ApiConnection();
-        $lightURL = "lights/" . $this->lightID . "/state";
-        $data = '{"xy": [' . $this->getXY()[0] .',' . $y . ']}';
-        $result = $conn->sendPutCmd($lightURL, $data);
-
-        return $result;
+        if(is_double($y) && $y >= 0 && $y <= 1) {
+            $conn = new ApiConnection();
+            $URL = "lights/" . $this->lightID . "/state";
+            $data = '{"xy": [' . $this->getXY()[0] .',' . $y . ']}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -290,13 +302,13 @@ class LightState {
      * @return array
      */
     function setCt($ct){
-        // Between 153 an 500
-        $conn = new ApiConnection();
-        $lightURL = "lights/" . $this->lightID . "/state";
-        $data = '{"ct": ' . $ct .'}';
-        $result = $conn->sendPutCmd($lightURL, $data);
-
-        return $result;
+        if(is_int($ct) && $ct >= 153 && $ct <= 500) {
+            $conn = new ApiConnection();
+            $URL = "lights/" . $this->lightID . "/state";
+            $data = '{"ct": ' . $ct .'}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        }
     }
 
     /**
@@ -306,13 +318,15 @@ class LightState {
      * @return array
      */
     function setAlert($alert) {
-        // none, select, lselect
-        $conn = new ApiConnection();
-        $lightURL = "lights/" . $this->lightID . "/state";
-        $data = '{"alert": "' . $alert .'"}';
-        $result = $conn->sendPutCmd($lightURL, $data);
-
-        return $result;
+        if(is_string($alert) && ($alert == "none" || $alert == "select" || $alert == "lselect")) {
+            $conn = new ApiConnection();
+            $URL = "lights/" . $this->lightID . "/state";
+            $data = '{"alert": "' . $alert .'"}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -322,13 +336,15 @@ class LightState {
      * @return array
      */
     function setEffect($effect) {
-        // none or colorloop
-        $conn = new ApiConnection();
-        $lightURL = "lights/" . $this->lightID . "/state";
-        $data = '{"effect": "' . $effect .'"}';
-        $result = $conn->sendPutCmd($lightURL, $data);
-
-        return $result;
+        if(is_string($effect) && ($effect == "none" || $effect == "colorloop")) {
+            $conn = new ApiConnection();
+            $URL = "lights/" . $this->lightID . "/state";
+            $data = '{"effect": "' . $effect .'"}';
+            $result = $conn->sendPutCmd($URL, $data);
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
