@@ -5,7 +5,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.1
+ * @version     v1.2
  */
 class Light {
     /**
@@ -175,6 +175,29 @@ class Light {
         } else {
             return null;
         }
+    }
+
+    function getLightDataJSON() {
+        $data = array();
+        $data["id"] = $this->lightID;
+        $data["name"] = $this->lightName;
+        $data["type"] = $this->lightType;
+        $data["model"] = $this->modelNo;
+        $data["softwareVer"] = $this->softwareVersion;
+        $data["vendor"] = $this->vendor;
+        $data["uuid"] = $this->uuid;
+
+        $data["lightstate"]["on"] = $this->lightState->isOn();
+        $data["lightstate"]["brightness"] = $this->lightState->getBrightness();
+        $data["lightstate"]["saturation"] = $this->lightState->getSaturation();
+        $data["lightstate"]["hue"] = $this->lightState->getHue();
+        $data["lightstate"]["xy"] = $this->lightState->getXY();
+        $data["lightstate"]["ct"] = $this->lightState->getCT();
+        $data["lightstate"]["alert"] = $this->lightState->getAlert();
+        $data["lightstate"]["effect"] = $this->lightState->getEffect();
+        $data["lightstate"]["colormode"] = $this->lightState->getColorMode();
+
+        return json_encode($data);
     }
 }
 ?>

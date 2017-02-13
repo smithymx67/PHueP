@@ -4,7 +4,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.1
+ * @version     v1.2
  */
 
 require_once "Bridge.php";
@@ -128,7 +128,7 @@ class Client {
             $light = $this->conn->sendGetCmd("lights/{$lightID}");
             if(isset($light[0]["error"])){
                 $error = $this->generateError($light);
-                print_r($error);
+                //print_r($error);
                 return null;
             } else {
                 $lightState = $this->createNewLightState($lightID, $light);
@@ -152,7 +152,7 @@ class Client {
 
             if(isset($scene[0]["error"])) {
                 $error = $this->generateError($scene);
-                print_r($error);
+                //print_r($error);
                 return null;
             } else {
                 $sceneLightStates = array();
@@ -183,7 +183,7 @@ class Client {
 
             if(isset($group[0]["error"])) {
                 $error = $this->generateError($group);
-                print_r($error);
+                //print_r($error);
                 return null;
             } else {
                 $groupState = $this->createNewGroupState($group);
@@ -208,7 +208,7 @@ class Client {
 
             if(isset($schedule[0]["error"])) {
                 $error = $this->generateError($schedule);
-                print_r($error);
+                //print_r($error);
                 return null;
             } else {
                 $scheduleCommand = $this->createNewScheduleCommand($scheduleID, $schedule);
