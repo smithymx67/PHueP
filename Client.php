@@ -4,7 +4,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.2
+ * @version     v1.3
  */
 
 require_once "Bridge.php";
@@ -535,6 +535,19 @@ class Client {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Recall a scene on all lights
+     *
+     * @param $sceneID
+     * @return array
+     */
+    function setGlobalScene($sceneID) {
+        $URL = "groups/0/action";
+        $data = '{"scene": "' . $sceneID . '"}';
+        $result = $this->conn->sendPutCmd($URL, $data);
+        return $result;
     }
 }
 ?>
