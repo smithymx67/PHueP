@@ -4,7 +4,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.3
+ * @version     v1.4
  */
 
 require_once "Bridge.php";
@@ -413,7 +413,7 @@ class Client {
             $allscenes = $this->getAllScenes();
             $sceneNameExists = false;
             foreach($allscenes as $scene) {
-                if($scene["name"] == $sceneName){
+                if($scene->getSceneName() == $sceneName){
                     $sceneNameExists = true;
                     break;
                 }
