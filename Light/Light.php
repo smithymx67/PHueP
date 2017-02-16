@@ -177,6 +177,11 @@ class Light {
         }
     }
 
+    /**
+     * Return an array of data with the lights information
+     *
+     * @return string
+     */
     function getLightDataJSON() {
         $data = array();
         $data["id"] = $this->lightID;

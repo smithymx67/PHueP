@@ -5,7 +5,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.1
+ * @version     v1.2
  */
 class Scene {
     /**
@@ -74,7 +74,7 @@ class Scene {
     /**
      * Light that are in the scene
      *
-     * @var LightState
+     * @var SceneLightState
      */
     private $sceneLightStates;
 
@@ -171,7 +171,7 @@ class Scene {
     /**
      * Returns the light state object of the scene
      *
-     * @return LightState
+     * @return SceneLightState
      */
     function getSceneLightStates() {
         return $this->sceneLightStates;
@@ -236,6 +236,36 @@ class Scene {
         $data = '{"storelightstate":true}';
         $result = $conn->sendPutCmd($URL, $data);
         return $result;
+    }
+
+    /**
+     * Return an array of data with the scenes information
+     *
+     * @return string
+     */
+    function getSceneDataJSON() {
+        $data = array();
+        $data["id"] = $this->sceneID;
+        $data["name"] = $this->sceneName;
+        $data["owner"] = $this->sceneOwner;
+        $data["recycle"] = $this->sceneRecycle;
+        $data["locked"] = $this->sceneLocked;
+        $data["picture"] = $this->scenePicture;
+        $data["lastUpdate"] = $this->sceneLastUpdate;
+        $data["version"] = $this->sceneVersion;
+
+        $data["appData"]["version"] = $this->getSceneAppData()->getVersion();
+        $data["appData"]["data"] = $this->getSceneAppData()->getData();
+
+        /** @var $lightState SceneLightState */
+        foreach ($this->sceneLightStates as $lightState) {
+            $data["lightstate"][$lightState->getLightID()]["on"] = $lightState->isOn();
+            $data["lightstate"][$lightState->getLightID()]["bri"] = $lightState->getLightBrightness();
+            $data["lightstate"][$lightState->getLightID()]["xy"] = $lightState->getLightXY();
+            $data["lightstate"][$lightState->getLightID()]["ct"] = $lightState->getLightCT();
+        }
+
+        return json_encode($data);
     }
 }
 ?>
