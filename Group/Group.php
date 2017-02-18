@@ -6,7 +6,7 @@ require_once "GroupClass.php";
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.1
+ * @version     v1.2
  */
 class Group {
     /**
@@ -222,6 +222,33 @@ class Group {
         $data = '{"scene": "' . $sceneID .'"}';
         $result = $conn->sendPutCmd($URL, $data);
         return $result;
+    }
+
+    /**
+     * Return an array of data with the groups information
+     *
+     * @return string
+     */
+    function getGroupDataJSON() {
+        $data = array();
+        $data["id"] = $this->groupID;
+        $data["name"] = $this->groupName;
+        $data["type"] = $this->groupType;
+        $data["class"] = $this->groupClass;
+
+        $data["groupstate"]["any_on"] = $this->groupState->isAnyOn();
+        $data["groupstate"]["all_on"] = $this->groupState->isAllOn();
+
+        $data["lightstate"]["brightness"] = $this->groupAction->getGroupBrightness();
+        $data["lightstate"]["saturation"] = $this->groupAction->getGroupSaturation();
+        $data["lightstate"]["hue"] = $this->groupAction->getGroupHue();
+        $data["lightstate"]["xy"] = $this->groupAction->getGroupXY();
+        $data["lightstate"]["ct"] = $this->groupAction->getGroupCT();
+        $data["lightstate"]["alert"] = $this->groupAction->getGroupAlert();
+        $data["lightstate"]["effect"] = $this->groupAction->getGroupEffect();
+        $data["lightstate"]["colormode"] = $this->groupAction->getGroupColorMode();
+
+        return json_encode($data);
     }
 }
 ?>
