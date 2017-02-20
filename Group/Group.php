@@ -6,7 +6,7 @@ require_once "GroupClass.php";
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.2
+ * @version     v1.4
  */
 class Group {
     /**
@@ -163,19 +163,15 @@ class Group {
     /**
      * Method to set the lights inside a group
      *
-     * @param array $lights     Array of all lights by ID in the group
+     * @param string $lights     String of all lights by ID in the group in JSON
      * @return array
      */
     function setGroupLights($lights) {
-        if(is_array($lights)) {
-            $conn = new ApiConnection();
-            $groupURL = "groups/" . $this->groupID;
-            $data = '{"lights": ' . json_encode($lights) .'}';
-            $result = $conn->sendPutCmd($groupURL, $data);
-            return $result;
-        } else {
-            return null;
-        }
+        $conn = new ApiConnection();
+        $groupURL = "groups/" . $this->groupID;
+        $data = '{"lights": ' . $lights .'}';
+        $result = $conn->sendPutCmd($groupURL, $data);
+        return $result;
     }
 
     /**
@@ -200,12 +196,11 @@ class Group {
     /**
      * Method to delete a group
      *
-     * @param string $id    The ID of a group
      * @return array
      */
-    function deleteGroup($id) {
+    function deleteGroup() {
         $conn = new ApiConnection();
-        $groupURL = "groups/{$id}";
+        $groupURL = "groups/{$this->groupID}";
         $result = $conn->sendDeleteCmd($groupURL);
         return $result;
     }
@@ -235,6 +230,7 @@ class Group {
         $data["name"] = $this->groupName;
         $data["type"] = $this->groupType;
         $data["class"] = $this->groupClass;
+        $data["lights"] = $this->groupLights;
 
         $data["groupstate"]["any_on"] = $this->groupState->isAnyOn();
         $data["groupstate"]["all_on"] = $this->groupState->isAllOn();

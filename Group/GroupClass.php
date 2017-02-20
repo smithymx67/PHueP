@@ -5,7 +5,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.0
+ * @version     v1.1
  */
 class GroupClass {
     /**
@@ -20,7 +20,7 @@ class GroupClass {
         "BEDROOM" => "Bedroom",
         "KIDS_BEDROOM" => "Kids bedroom",
         "BATHROOM" => "Bathroom",
-        "NURSERY" => "NURSERY",
+        "NURSERY" => "Nursery",
         "RECREATION" => "Recreation",
         "OFFICE" => "Office",
         "GYM" => "Gym",

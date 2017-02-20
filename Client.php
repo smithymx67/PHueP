@@ -4,7 +4,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.4
+ * @version     v1.5
  */
 
 require_once "Bridge.php";
@@ -351,9 +351,10 @@ class Client {
      * @return Group
      */
     private function createNewGroup($groupID, $group, $groupState, $groupAction) {
+        $groupClass = isset($group["class"]) ? $group["class"] : "";
         $newGroup = new Group(
             $groupID, $group["name"],
-            $group["type"], $group["class"],
+            $group["type"], $groupClass,
             $groupState, $groupAction, $group["lights"]);
         return $newGroup;
     }
@@ -443,8 +444,9 @@ class Client {
         if(is_string($name) && strlen($name) > 0 && strlen($name) <= 32) {
             $allGroups = $this->getAllGroups();
             $groupNameExists = false;
+            /** @var $group Group */
             foreach($allGroups as $group) {
-                if($group["name"] == $name) {
+                if($group->getGroupName() == $name) {
                     $groupNameExists = true;
                     break;
                 }
@@ -454,7 +456,7 @@ class Client {
                 $groupURL = "groups";
                 $data = '{"name": "' . $name .'", 
                   "type": "LightGroup",
-                  "lights": ' . json_encode($lights) .'}';
+                  "lights": ' . $lights .'}';
                 $result = $this->conn->sendPostCmd($groupURL, $data);
                 return $result;
             } else {
@@ -478,8 +480,9 @@ class Client {
         if(is_string($name) && strlen($name) > 0 && strlen($name) <= 32 && $groupClasses->isClassValid($class)) {
             $allGroups = $this->getAllGroups();
             $groupNameExists = false;
+            /** @var $group Group */
             foreach($allGroups as $group) {
-                if($group["name"] == $name) {
+                if($group->getGroupName() == $name) {
                     $groupNameExists = true;
                     break;
                 }
