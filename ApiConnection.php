@@ -20,7 +20,7 @@ class ApiConnection {
      *
      * @var string
      */
-    private $bridgeIp = "192.168.2.25";
+    private $bridgeIp = "192.168.2.2";
 
     /**
      * Base URL to send requests too

@@ -5,7 +5,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.1
+ * @version     v1.3
  */
 class ScheduleCommand {
     /**
@@ -32,7 +32,7 @@ class ScheduleCommand {
     /**
      * The payload of the command
      *
-     * @var string
+     * @var array
      */
     private $commandBody;
 
@@ -48,7 +48,7 @@ class ScheduleCommand {
         $this->scheduleID           = (string) $scheduleID;
         $this->commandAddress       = (string) $commandAddress;
         $this->commandMethod        = (string) $commandMethod;
-        $this->commandBody          = (string) $commandBody;
+        $this->commandBody          = (array) $commandBody;
     }
 
     /**
@@ -88,10 +88,7 @@ class ScheduleCommand {
         if(is_string($address)) {
             $conn = new ApiConnection();
             $URL = "schedules/" . $this->scheduleID;
-            $data = '{"command": {
-                    "address": "' . $address . '",
-                    "method": "' . $this->commandMethod . '",
-                    "body": ' . json_encode($this->commandBody) . '}';
+            $data = '{"command": {"address": "' . $address . '", "method": "' . $this->commandMethod . '", "body": ' . json_encode($this->commandBody) . '}}';
             $result = $conn->sendPutCmd($URL, $data);
             return $result;
         } else {
@@ -109,10 +106,7 @@ class ScheduleCommand {
         if(is_string($method)) {
             $conn = new ApiConnection();
             $URL = "schedules/" . $this->scheduleID;
-            $data = '{"command": {
-                    "address": "' . $this->commandAddress . '",
-                    "method": "' . $method . '",
-                    "body": ' . json_encode($this->commandBody) . '}';
+            $data = '{"command": {"address": "' . $this->commandAddress . '", "method": "' . $method . '", "body": ' . json_encode($this->commandBody) . '}}';
             $result = $conn->sendPutCmd($URL, $data);
             return $result;
         } else {
@@ -127,13 +121,10 @@ class ScheduleCommand {
      * @return array
      */
     function setCommandBody($cmd) {
-        if(is_string($cmd)) {
+        if(is_array($cmd)) {
             $conn = new ApiConnection();
             $URL = "schedules/" . $this->scheduleID;
-            $data = '{"command": {
-                    "address": "' . $this->commandAddress . '",
-                    "method": "' . $this->commandMethod . '",
-                    "body": ' . json_encode($cmd) . '}';
+            $data = '{"command": {"address": "' . $this->commandAddress . '", "method": "' . $this->commandMethod . '", "body": ' . json_encode($cmd) . '}}';
             $result = $conn->sendPutCmd($URL, $data);
             return $result;
         } else {

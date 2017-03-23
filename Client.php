@@ -7,7 +7,7 @@
  * @version     v1.5
  */
 
-require_once "Bridge.php";
+require_once "Bridge/Bridge.php";
 require_once "Light/Light.php";
 require_once "Light/LightState.php";
 require_once "Scene/Scene.php";
@@ -517,8 +517,8 @@ class Client {
      */
     function createSchedule($name, $desc, $time, $cmdAddress, $cmdMethod, $cmdBody) {
         if(is_string($name) && strlen($name) > 0 && strlen($name) <= 32) {
-            if(is_string($desc) && strlen($desc) > 0 && strlen(($desc) <= 64)) {
-                if(is_string($time) && is_string($cmdAddress) && is_string($cmdMethod) && is_string($cmdBody)) {
+            if(is_string($desc) && strlen($desc) >= 0 && strlen(($desc) <= 64)) {
+                if(is_string($time) && is_string($cmdAddress) && is_string($cmdMethod) && is_array($cmdBody)) {
                     $URL = "schedules";
                     $data = '{"name": "' . $name .'", 
                               "description": "' . $desc . '",
@@ -526,16 +526,22 @@ class Client {
                               "command": {
                                 "address": "' . $cmdAddress . '",
                                 "method": "' . $cmdMethod . '",
-                                "body": ' . json_encode($cmdBody) . '}';
+                                "body": ' . json_encode($cmdBody) . '}}';
+
+                    echo $data;
+
                     $result = $this->conn->sendPostCmd($URL, $data);
-                    return $result;
+                    return print_r($result);
                 } else {
+                    echo "Error 3";
                     return null;
                 }
             } else {
+                echo "Error 2";
                 return null;
             }
         } else {
+            echo "Error 1";
             return null;
         }
     }

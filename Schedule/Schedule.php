@@ -5,7 +5,7 @@
  *
  * @author      Sam Smith (smithymx67) <sam@samsmith.me>
  * @copyright   Copyright (c) 2017 Sam Smith
- * @version     v1.1
+ * @version     v1.3
  */
 class Schedule {
     /**
@@ -186,7 +186,7 @@ class Schedule {
      * @return array
      */
     function setScheduleName($name) {
-        if(is_string($name) && $name > 0 && $name <= 32) {
+        if(is_string($name) && strlen($name) > 0 && strlen($name) <= 32) {
             $conn = new ApiConnection();
             $URL = "schedules/" . $this->scheduleID;
             $data = '{"name": "' . $name .'"}';
@@ -204,7 +204,7 @@ class Schedule {
      * @return array
      */
     function setScheduleDescription($description) {
-        if(is_string($description) && $description > 0 && $description <= 32) {
+        if(is_string($description) && strlen($description) > 0 && strlen($description) <= 32) {
             $conn = new ApiConnection();
             $URL = "schedules/" . $this->scheduleID;
             $data = '{"description": "' . $description .'"}';
@@ -238,7 +238,7 @@ class Schedule {
      */
     function setScheduleStatus($status) {
         // String 5 to 16
-        if(is_string($status) && $status >= 5 && $status <= 16) {
+        if(is_string($status) && strlen($status) >= 5 && strlen($status) <= 16) {
             $conn = new ApiConnection();
             $URL = "schedules/" . $this->scheduleID;
             $data = '{"status": "' . $status .'"}';
@@ -277,6 +277,26 @@ class Schedule {
         $URL = "schedules/" . $this->scheduleID;
         $result = $conn->sendDeleteCmd($URL);
         return $result;
+    }
+
+    /**
+     * Return an array of data with the lights information
+     *
+     * @return string
+     */
+    function getScheduleDataJSON() {
+        $data = array();
+        $data["id"] = $this->scheduleID;
+        $data["name"] = $this->scheduleName;
+        $data["desc"] = $this->scheduleDescription;
+        $data["localtime"] = $this->scheduleTime;
+        $data["status"] = $this->scheduleStatus;
+
+        $data["command"]["address"] = $this->scheduleCommand->getCommandAddress();
+        $data["command"]["body"] = $this->scheduleCommand->getCommandBody();
+        $data["command"]["method"] = $this->scheduleCommand->getCommandMethod();
+
+        return json_encode($data);
     }
 }
 ?>
