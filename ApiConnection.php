@@ -13,14 +13,14 @@ class ApiConnection {
      *
      * @var string
      */
-    private $apiKey = "MQmxQSZJ1-urKcSFKZcCOKgE4eLg7JtY18uyWOlP";
+    private $apiKey = "<< ADD YOUR API KEY HERE >>";
 
     /**
      * IP address of the bridge
      *
      * @var string
      */
-    private $bridgeIp = "192.168.2.2";
+    private $bridgeIp = "<< ADD YOU BRIDGE IP HERE >>";
 
     /**
      * Base URL to send requests too
